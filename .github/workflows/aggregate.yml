@@ -1,0 +1,40 @@
+name: aggregate-sign
+on:
+  push:
+    branches: [main]
+    paths:
+      - "results/**"
+  schedule:
+    - cron: "37 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: data-writer
+  cancel-in-progress: false
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Install PyNaCl
+        run: python3 -m pip install --quiet pynacl
+      - name: Aggregate and sign
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: python3 .github/scripts/aggregate.py
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/list.json data/list.json.sig
+          if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+          git commit -q -m "list: update $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3 4 5; do
+            git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i*5))
+          done
+          exit 1
