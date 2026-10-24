@@ -1,1 +1,1 @@
-{"version":1,"generated_at":"2026-10-24T00:46:13Z","scanner_id":"agg","scanners":["s1","s3"],"count":1,"servers":[{"host":"vpn128392146.opengw.net","ip":"14.32.88.148","port":443,"country":"KR","latency_ms":734,"success_rate":0.5,"score":31.6,"last_ok":"2026-10-24T00:32:03Z","scanners_ok":1,"vpngate_score":557795,"speed":176958910}]}
+{"version":1,"generated_at":"2026-10-24T00:47:04Z","scanner_id":"agg","scanners":["s1","s3"],"count":0,"servers":[]}
